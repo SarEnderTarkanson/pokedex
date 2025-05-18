@@ -1,15 +1,21 @@
-import { Text, View } from "react-native";
+import { Link } from "expo-router";
+import { StyleSheet, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Index() {
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
+    <SafeAreaView style={styles.container}>
       <Text>Edit app/index.tsx to edit this screen.</Text>
-    </View>
+      <Link href="/about">About</Link>
+      <Link href={{ pathname: "/pokemon/[id]", params: { id: 3 } }}>
+        Pokemon 3
+      </Link>
+    </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: "#FF0000",
+  },
+});
