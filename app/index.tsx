@@ -4,7 +4,7 @@ import { Link } from "expo-router";
 import { Card } from "@/components/Card";
 import { StyleSheet, Text, View, Image, FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { PokemonCart } from "./pokemon/PokemonCart";
+import { PokemonCard } from "@/components/pokemon/PokemonCard";
 
 export default function Index() {
   const colors = useThemeColors();
@@ -31,7 +31,7 @@ export default function Index() {
           columnWrapperStyle={styles.gridGap}
           contentContainerStyle={[styles.gridGap, styles.list]}
           renderItem={({ item }) => (
-            <PokemonCart
+            <PokemonCard
               id={item.id}
               name={item.name}
               style={{ flex: 1 / 3 }}
