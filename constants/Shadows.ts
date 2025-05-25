@@ -1,3 +1,5 @@
+import { ViewStyle } from "react-native";
+
 export const Shadows = {
   dp2: {
     shadowOpacity: 0.2,
@@ -6,4 +8,4 @@ export const Shadows = {
     shadowRadius: 3,
     elevation: 2,
   },
-};
+} satisfies Record<string, ViewStyle>
