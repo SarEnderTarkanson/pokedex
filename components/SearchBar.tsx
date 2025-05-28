@@ -29,13 +29,13 @@ const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
     borderRadius: 16,
-    height: 32,
+    height: 36,
     paddingHorizontal: 12,
   },
   input: {
     flex: 1,
-    height: 16,
-    fontSize: 10,
-    lineHeight: 16,
+    height: 42,
+    fontSize: 12,
+    lineHeight: 20,
   },
 });
