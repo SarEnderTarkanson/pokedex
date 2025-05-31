@@ -23,6 +23,7 @@ export default function Index() {
   const { data, isFetching, fetchNextPage } =
     useInfiniteFetchQuery("/pokemon?limit=21");
   const [search, setSearch] = useState("");
+  const [sortKey, setSortKey] = useState<"id" | "name">("id");
   const pokemons = data?.pages.flatMap((page) => page.results) ?? [];
   const filteredPokemons = search
     ? pokemons.filter(
