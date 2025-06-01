@@ -1,10 +1,19 @@
 import { useThemeColors } from "@/hooks/useThemeColors";
 import { useState, useRef } from "react";
-import { Image, Modal, Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  Dimensions,
+  Image,
+  Modal,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { ThemedText } from "./ThemedText";
 import { Card } from "./Card";
 import { Row } from "./Row";
 import { Radio } from "./Radio";
+import { Shadows } from "@/constants/Shadows";
 
 type Props = {
   value: "id" | "name";
@@ -20,8 +29,18 @@ export function SortButton({ value, onChange }: Props) {
   const buttonRef = useRef<View>(null);
   const colors = useThemeColors();
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [position, setPosition] = useState<null | {
+    top: number;
+    right: number;
+  }>(null);
   const onButtonPress = () => {
-    setIsModalVisible(true);
+    buttonRef.current?.measureInWindow((x, y, width, height) => {
+      setPosition({
+        top: y + height,
+        right: Dimensions.get("window").width - x - width,
+      });
+      setIsModalVisible(true);
+    });
   };
   const onClose = () => {
     setIsModalVisible(false);
@@ -44,9 +63,16 @@ export function SortButton({ value, onChange }: Props) {
           />
         </View>
       </Pressable>
-      <Modal transparent visible={isModalVisible} onRequestClose={onClose}>
+      <Modal
+        animationType="fade"
+        transparent
+        visible={isModalVisible}
+        onRequestClose={onClose}
+      >
         <Pressable style={styles.backdrop} onPress={onClose} />
-        <View style={[styles.popup, { backgroundColor: colors.tint }]}>
+        <View
+          style={[styles.popup, { backgroundColor: colors.tint, ...position }]}
+        >
           <ThemedText
             style={styles.title}
             variant="subtitle2"
@@ -84,10 +110,13 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.3)",
   },
   popup: {
+    position: "absolute",
+    width: 113,
     padding: 4,
     borderRadius: 12,
     paddingTop: 16,
     gap: 16,
+    ...Shadows.dp2,
   },
   title: {
     paddingLeft: 20,
