@@ -17,6 +17,7 @@ import { getPokemonId } from "@/functions/pokemon";
 import { SearchBar } from "@/components/SearchBar";
 import { useState } from "react";
 import { Row } from "@/components/Row";
+import { SortButton } from "@/components/SortButton";
 
 export default function Index() {
   const colors = useThemeColors();
@@ -24,14 +25,18 @@ export default function Index() {
     useInfiniteFetchQuery("/pokemon?limit=21");
   const [search, setSearch] = useState("");
   const [sortKey, setSortKey] = useState<"id" | "name">("id");
-  const pokemons = data?.pages.flatMap((page) => page.results) ?? [];
-  const filteredPokemons = search
-    ? pokemons.filter(
-        (p) =>
-          p.name.includes(search.toLowerCase()) ||
-          getPokemonId(p.url).toString() === search
-      )
-    : pokemons;
+  const pokemons =
+    data?.pages.flatMap((page) =>
+      page.results.map((r) => ({ name: r.name, id: getPokemonId(r.url) }))
+    ) ?? [];
+  const filteredPokemons = [
+    ...(search
+      ? pokemons.filter(
+          (p) =>
+            p.name.includes(search.toLowerCase()) || p.id.toString() === search
+        )
+      : pokemons),
+  ].sort((a, b) => (a[sortKey] < b[sortKey] ? -1 : 1));
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.tint }]}>
@@ -45,8 +50,9 @@ export default function Index() {
           Pokedex
         </ThemedText>
       </Row>
-      <Row>
+      <Row gap={16}>
         <SearchBar value={search} onChange={setSearch} />
+        <SortButton value={sortKey} onChange={setSortKey} />
       </Row>
       <Card style={styles.body}>
         <FlatList
@@ -60,12 +66,12 @@ export default function Index() {
           contentContainerStyle={[styles.gridGap, styles.list]}
           renderItem={({ item }) => (
             <PokemonCard
-              id={getPokemonId(item.url)}
+              id={item.id}
               name={item.name}
               style={{ flex: 1 / 3 }}
             />
           )}
-          keyExtractor={(item) => item.url}
+          keyExtractor={(item) => item.id.toString()}
         />
       </Card>
     </SafeAreaView>
