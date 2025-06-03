@@ -1,17 +1,22 @@
 import { RootView } from "@/components/RootView";
 import { Row } from "@/components/Row";
 import { ThemedText } from "@/components/ThemedText";
+import { Colors } from "@/constants/Colors";
 import { useFetchQuery } from "@/hooks/useFetchQuery";
+import { useThemeColors } from "@/hooks/useThemeColors";
 import { router, useLocalSearchParams } from "expo-router";
 import { View, Text, StyleSheet, Image, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Pokemon() {
+  const colors = useThemeColors();
   const params = useLocalSearchParams() as { id: string };
   const { data: pokemon } = useFetchQuery("/pokemon/[id]", { id: params.id });
+  const mainType = pokemon?.types?.[0].type.name;
+  const colorType = mainType ? Colors.type[mainType] : colors.tint;
 
   return (
-    <RootView>
+    <RootView style={{backgroundColor: colorType}}>
       <View>
         <Image
           style={styles.pokeball}
