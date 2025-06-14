@@ -16,6 +16,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { PokemonType } from "./PokemonType";
 import { PokemonSpec } from "@/components/pokemon/PokemonSpec";
 import { PokemonStat } from "@/components/pokemon/PokemonStat";
+import Animated, { useSharedValue, withSpring } from "react-native-reanimated";
 
 export default function Pokemon() {
   const colors = useThemeColors();
@@ -32,6 +33,7 @@ export default function Pokemon() {
         .find(({ language }) => language.name === "en")
         ?.flavor_text.replaceAll("\n", " ")
     : undefined;
+  const top = useSharedValue(0);
 
   return (
     <RootView style={{ backgroundColor: colorType }}>
@@ -59,13 +61,15 @@ export default function Pokemon() {
               </ThemedText>
             </Row>
           </Pressable>
-          <ThemedText color="grayWhite" variant="subtitle2">
-            #{params.id.padStart(3, "0")}
-          </ThemedText>
+          <Pressable onPress={() => (top.value = withSpring(50))}>
+            <ThemedText color="grayWhite" variant="subtitle2">
+              #{params.id.padStart(3, "0")}
+            </ThemedText>
+          </Pressable>
         </Row>
         <View style={styles.body}>
-          <Image
-            style={styles.artwork}
+          <Animated.Image
+            style={{ ...styles.artwork, top: top }}
             source={{
               uri: getPokemonArtwork(params.id),
             }}
@@ -114,17 +118,18 @@ export default function Pokemon() {
             <ThemedText variant="subtitle1" style={{ color: colorType }}>
               Base Stats
             </ThemedText>
-            <View>
-              <PokemonStat name={"HP"} value={45} color={colorType} />
-              <PokemonStat name={"HP"} value={45} color={colorType} />
-              <PokemonStat name={"HP"} value={45} color={colorType} />
-              <PokemonStat name={"HP"} value={45} color={colorType} />
-              <PokemonStat name={"HP"} value={45} color={colorType} />
-              <PokemonStat name={"HP"} value={45} color={colorType} />
+            <View style={{ alignSelf: "stretch" }}>
+              {pokemon?.stats.map((stat) => (
+                <PokemonStat
+                  key={stat.stat.name}
+                  name={stat.stat.name}
+                  value={stat.base_stat}
+                  color={colorType}
+                />
+              ))}
             </View>
           </Card>
         </View>
-        <Text>Pokemon {params.id}</Text>
       </View>
     </RootView>
   );
@@ -153,6 +158,7 @@ const styles = StyleSheet.create({
   card: {
     paddingHorizontal: 20,
     paddingTop: 60,
+    paddingBottom: 20,
     gap: 16,
     alignItems: "center",
   },
