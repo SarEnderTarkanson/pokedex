@@ -16,7 +16,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { PokemonType } from "./PokemonType";
 import { PokemonSpec } from "@/components/pokemon/PokemonSpec";
 import { PokemonStat } from "@/components/pokemon/PokemonStat";
-import Animated, { useSharedValue, withSpring } from "react-native-reanimated";
+import { basePokemonStats } from "@/functions/pokemon";
 
 export default function Pokemon() {
   const colors = useThemeColors();
@@ -33,10 +33,11 @@ export default function Pokemon() {
         .find(({ language }) => language.name === "en")
         ?.flavor_text.replaceAll("\n", " ")
     : undefined;
-  const top = useSharedValue(0);
+
+  const stats = pokemon?.stats ?? basePokemonStats;
 
   return (
-    <RootView style={{ backgroundColor: colorType }}>
+    <RootView backgroundColor={colorType}>
       <View>
         <Image
           style={styles.pokeball}
@@ -61,15 +62,13 @@ export default function Pokemon() {
               </ThemedText>
             </Row>
           </Pressable>
-          <Pressable onPress={() => (top.value = withSpring(50))}>
-            <ThemedText color="grayWhite" variant="subtitle2">
-              #{params.id.padStart(3, "0")}
-            </ThemedText>
-          </Pressable>
+          <ThemedText color="grayWhite" variant="subtitle2">
+            #{params.id.padStart(3, "0")}
+          </ThemedText>
         </Row>
         <View style={styles.body}>
-          <Animated.Image
-            style={{ ...styles.artwork, top: top }}
+          <Image
+            style={{ ...styles.artwork }}
             source={{
               uri: getPokemonArtwork(params.id),
             }}
@@ -77,7 +76,7 @@ export default function Pokemon() {
             height={200}
           />
           <Card style={styles.card}>
-            <Row gap={16}>
+            <Row gap={16} style={{ height: 20 }}>
               {types.map((type) => (
                 <PokemonType name={type.type.name} key={type.type.name} />
               ))}
@@ -119,7 +118,7 @@ export default function Pokemon() {
               Base Stats
             </ThemedText>
             <View style={{ alignSelf: "stretch" }}>
-              {pokemon?.stats.map((stat) => (
+              {stats.map((stat) => (
                 <PokemonStat
                   key={stat.stat.name}
                   name={stat.stat.name}
