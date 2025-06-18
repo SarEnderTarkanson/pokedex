@@ -16,7 +16,8 @@
         "foregroundImage": "./assets/images/pokedex-image.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.anonymous.pokedex"
     },
     "web": {
       "bundler": "metro",
