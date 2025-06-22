@@ -4,7 +4,7 @@ import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 const endpoint = "https://pokeapi.co/api/v2/";
 
 type API = {
-  "/pokemon?limit=10000": {
+  "/pokemon?limit=1500": {
     count: number;
     next: string | null;
     results: { name: string; url: string }[];
@@ -45,8 +45,8 @@ export function useFetchQuery<T extends keyof API>(
 ) {
   const localUrl =
     endpoint +
-    Object.entries(params ?? {}).reduce(
-      (acc, [key, value]) => acc.replaceAll(`[${key}]`, value),
+    Object.entries(params ?? {}).reduce<string>(
+      (acc, [key, value]) => acc.replaceAll(`[${key}]`, String(value)),
       path
     );
   return useQuery({
